@@ -1,37 +1,42 @@
-## Welcome to GitHub Pages
+# Travis CI Configuration
+#### Required Items
+- A server with SSH access
+- Github Account
+- Travis-CI Account
 
-You can use the [editor on GitHub](https://github.com/tylerhammer/tylerhammer.github.io/edit/master/index.md) to maintain and preview the content for your website in Markdown files.
+#### Host configuration
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+1. SSH into the host machine via `ssh` like so:
+```shell
+$ ssh hammer@1.1.1.1
+```
+This shows that my host machine IP address is `1.1.1.1` and i'm logging in with a user `hammer`.
 
-### Markdown
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+2. The first thing we want to do is set up an ssh key for the current user (still on the host machine) and later we'll save it on our local machine. To do this, we'll run this command:
+```shell
+$ cd ~/.ssh && ssh-keygen -t rsa -b 4096 -C "Project"
+```
+You'll get some prompt, just hit `Enter` all through to accept defaults, after that you should have your ssh key saved inside `~/.ssh/`.
 
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+3. Next, I'll add the key as an authorized key on the server like this:
+```shell
+$ cat Project.pub >> authorized_keys
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+4. This command is run while still in the same ~/.ssh directory. After this, let's copy the content of the public key we just generated like this:
+```shell
+$ cat Project.pub
+```
+This command will output the content of the public key on your console so you can copy the key. You'll see one long random texts on your console, mark it from the beginning to the end and copy it. Go to GitHub and add it to your account.
 
-### Jekyll Themes
+---
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/tylerhammer/tylerhammer.github.io/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+Once the key has been added to the repository in I will change directory into the directory i want to put my project (Still on my server), like so:
+```shell
+$ cd /var/www/html
+```
+Next, I will clone the repository. I'll be using SSH to clone the repository so that Password will nor be required:
+```shell
+$ git clone git@github.com:tylerhammer/Project.git .
+```
